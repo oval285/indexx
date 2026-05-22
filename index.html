@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ ограничен</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            padding: 20px;
+            border: 2px solid #ff0000;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            border-radius: 5px;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #ff0000;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #cccccc;
+        }
+
+        #timer {
+            font-size: 32px;
+            color: #ffcc00;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Стили для секретного контента (изначально скрыт) */
+        #secret-content {
+            display: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        #secret-content h1 {
+            color: #00ff00;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background-color: #00ff00;
+            color: #000000;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 3px;
+            box-shadow: 0 4px 10px rgba(0, 255, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #00cc00;
+            box-shadow: 0 6px 15px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen" class="container">
+        <h1>Доступ заблокирован</h1>
+        <p>Запрашиваемый ресурс появится позже. Дождитесь автоматической разблокировки системы.</p>
+        <div id="timer">00:00:00:00</div>
+        <p style="font-size: 12px; color: #555;">Время разблокировки: 22.05.2026 19:50 МСК</p>
+    </div>
+
+    <div id="secret-content" class="container">
+        <h1>Доступ разрешен</h1>
+        <p>Вы успешно дождались открытия шлюза. Файл готов к выгрузке:</p>
+        
+        <a href="https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://disk.yandex.ru/d/sZ3T5TTCUAbWkQ" download="@5D" class="download-btn">СКАЧАТЬ ФАЙЛ (@5D)</a>
+    </div>
+
+    <script>
+        // Устанавливаем целевую дату: 22 мая 2026 года, 19:50:00 по Московскому времени (UTC+3)
+        const targetDate = new Date('2026-05-22T19:50:00+03:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                // Если время пришло: скрываем заглушку и показываем кнопку скачивания
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('secret-content').style.display = 'block';
+                clearInterval(timerInterval);
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            const displayDays = days < 10 ? '0' + days : days;
+            const displayHours = hours < 10 ? '0' + hours : hours;
+            const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+            const displaySeconds = seconds < 10 ? '0' + seconds : seconds;
+
+            document.getElementById('timer').innerHTML = 
+                `${displayDays}д : ${displayHours}ч : ${displayMinutes}м : ${displaySeconds}с`;
+        }
+
+        const timerInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
